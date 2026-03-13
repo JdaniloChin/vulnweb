@@ -1,7 +1,41 @@
 from flask import Flask, request
 import sqlite3
+from pathlib import Path
 
 app = Flask(__name__)
+DB_PATH = Path(__file__).with_name("database.db")
+
+
+def init_db_if_needed():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            username TEXT,
+            password TEXT
+        )
+        """
+    )
+
+    user_count = cursor.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+    if user_count == 0:
+        cursor.executemany(
+            "INSERT INTO users (id, username, password) VALUES (?, ?, ?)",
+            [
+                (1, "admin", "1234"),
+                (2, "danilo", "sql123"),
+                (3, "student", "pass"),
+            ],
+        )
+
+    conn.commit()
+    conn.close()
+
+
+init_db_if_needed()
 
 @app.route("/")
 def home():
@@ -23,15 +57,14 @@ def home():
 @app.route("/login")
 def login():
 
-    user = request.args.get("user")
-    password = request.args.get("pass")
+    user = request.args.get("user", "")
+    password = request.args.get("pass", "")
 
-    conn = sqlite3.connect("database.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # CONSULTA VULNERABLE
+    # CONSULTA INTENCIONALMENTE VULNERABLE PARA DEMOSTRACION DE SQLi
     query = f"SELECT * FROM users WHERE username='{user}' AND password='{password}'"
-
     result = cursor.execute(query).fetchall()
 
     conn.close()
