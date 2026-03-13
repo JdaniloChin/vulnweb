@@ -74,6 +74,25 @@ def login():
     else:
         return "Login incorrecto"
 
+@app.route("/admin")
+def admin():
+    user = request.args.get("user","")
+    conn =  sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    #Consulta Vulnerable
+    query =  f"SELECT * FROM users WHERE username='{user}'"
+
+    result = cursor.execute(query).fetchall()
+    conn.close()
+
+    if result and result[0][1] == "admin":
+        return """
+                <h1>Panel admin>/h1>
+                <p>Usuarios del sistema:</p>
+                """ + str(result)
+    else:
+        return "Acceso denegado"
 
 if __name__ == "__main__":
     app.run()
