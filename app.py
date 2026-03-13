@@ -93,6 +93,18 @@ def admin():
                 """ + str(result)
     else:
         return "Acceso denegado"
+    
+@app.route("/view")
+def view_file():
+    file = request.args.get("file","")
+
+    try:
+        with open(file,"r") as f:
+            content = f.read()
+
+        return f"<pre>{content}</pre>"
+    except:
+        return "No se pudo abrir el archivo"
 
 if __name__ == "__main__":
     app.run()
