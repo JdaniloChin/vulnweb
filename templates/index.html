@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero p-4 p-md-5 mb-4">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+    <div>
+      <p class="lab-badge mb-3">ENTORNO DE PRACTICA OFENSIVA</p>
+      <h1 class="display-6 fw-bold mb-2">Laboratorio Web Vulnerable</h1>
+      <p class="mb-0 text-white-50">Aplicacion de entrenamiento para identificar y explotar SQL Injection, path traversal y command injection en un entorno controlado.</p>
+    </div>
+  </div>
+</section>
+
+<div class="row g-4">
+  <div class="col-12 col-lg-6">
+    <div class="card lab-card h-100">
+      <div class="card-body p-4">
+        <h2 class="h4">1) Login vulnerable (SQLi)</h2>
+        <p class="text-secondary">Bypass de autenticacion en el formulario de login.</p>
+        <form action="/login" method="get" class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Usuario</label>
+            <input class="form-control" name="user" placeholder="admin">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Password</label>
+            <input class="form-control" name="pass" placeholder="1234">
+          </div>
+          <div class="col-12">
+            <button class="btn btn-dark" type="submit">Enviar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="card lab-card h-100">
+      <div class="card-body p-4">
+        <h2 class="h4">2) Admin por query string</h2>
+        <p class="text-secondary">Endpoint vulnerable por concatenacion SQL.</p>
+        <form action="/admin" method="get" class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Parametro user</label>
+            <input class="form-control" name="user" placeholder="admin">
+          </div>
+          <div class="col-12">
+            <button class="btn btn-dark" type="submit">Probar acceso</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="card lab-card h-100">
+      <div class="card-body p-4">
+        <h2 class="h4">3) Lector de archivos (Traversal)</h2>
+        <p class="text-secondary">Lectura de rutas locales controladas por el atacante.</p>
+        <form action="/view" method="get" class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Parametro file</label>
+            <input class="form-control" name="file" placeholder="app.py">
+          </div>
+          <div class="col-12">
+            <button class="btn btn-dark" type="submit">Leer archivo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="card lab-card h-100">
+      <div class="card-body p-4">
+        <h2 class="h4">4) Ping vulnerable (Command Injection)</h2>
+        <p class="text-secondary">Comando del sistema construido con entrada del usuario.</p>
+        <form action="/ping" method="get" class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Host</label>
+            <input class="form-control" name="host" placeholder="127.0.0.1">
+          </div>
+          <div class="col-12">
+            <button class="btn btn-dark" type="submit">Ejecutar ping</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

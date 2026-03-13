@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card lab-card">
+  <div class="card-body p-4 p-md-5">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h1 class="h3 mb-0">Resultado Login</h1>
+      {% if success %}
+      <span class="badge text-bg-success">Login correcto</span>
+      {% else %}
+      <span class="badge text-bg-danger">Login incorrecto</span>
+      {% endif %}
+    </div>
+
+    <p><strong>Input:</strong> user={{ user }} pass={{ password }}</p>
+
+    <h2 class="h5 mt-4">Consulta ejecutada</h2>
+    <div class="code-block">{{ query }}</div>
+
+    <h2 class="h5 mt-4">Filas retornadas</h2>
+    <div class="code-block">{{ result }}</div>
+
+    <a class="btn btn-outline-dark mt-4" href="/">Volver al laboratorio</a>
+  </div>
+</div>
+{% endblock %}

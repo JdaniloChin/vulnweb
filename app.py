@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import sqlite3, os
 from pathlib import Path
 
@@ -39,20 +39,7 @@ init_db_if_needed()
 
 @app.route("/")
 def home():
-
-    return """
-    <h2>Login</h2>
-
-    <form action="/login">
-        Usuario:<br>
-        <input name="user"><br>
-
-        Password:<br>
-        <input name="pass"><br>
-
-        <input type="submit">
-    </form>
-    """
+    return render_template("index.html")
 
 @app.route("/login")
 def login():
@@ -69,10 +56,14 @@ def login():
 
     conn.close()
 
-    if result:
-        return f"Login correcto: {result}"
-    else:
-        return "Login incorrecto"
+    return render_template(
+        "login_result.html",
+        user=user,
+        password=password,
+        query=query,
+        result=result,
+        success=bool(result),
+    )
 
 @app.route("/admin")
 def admin():
@@ -86,37 +77,38 @@ def admin():
     result = cursor.execute(query).fetchall()
     conn.close()
 
-    if result and result[0][1] == "admin":
-        return """
-                <h1>Panel admin>/h1>
-                <p>Usuarios del sistema:</p>
-                """ + str(result)
-    else:
-        return "Acceso denegado"
+    return render_template(
+        "admin_result.html",
+        user=user,
+        query=query,
+        result=result,
+        allowed=bool(result and result[0][1] == "admin"),
+    )
     
 @app.route("/view")
 def view_file():
     file = request.args.get("file","")
+    content = ""
+    error = ""
 
     try:
-        with open(file,"r") as f:
+        with open(file,"r", encoding="utf-8", errors="replace") as f:
             content = f.read()
+    except Exception as ex:
+        error = str(ex)
 
-        return f"<pre>{content}</pre>"
-    except:
-        return "No se pudo abrir el archivo"
+    return render_template("view_result.html", file=file, content=content, error=error)
     
 
 @app.route("/ping")
 def ping():
     host = request.args.get("host","")
-    command = f"ping -c 1 {host}"
+    ping_count_flag = "-n" if os.name == "nt" else "-c"
+    command = f"ping {ping_count_flag} 1 {host}"
 
     output = os.popen(command).read()
 
-    return f"""
-        <h2>Resultado del Ping</h2>
-         <pre>{output}</pre> """
+    return render_template("ping_result.html", host=host, command=command, output=output)
 
 if __name__ == "__main__":
     app.run()
