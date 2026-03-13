@@ -110,7 +110,7 @@ def view_file():
 @app.route("/ping")
 def ping():
     host = request.args.get("host","")
-    command = "fping -c 1 {host}"
+    command = f"ping -c 1 {host}"
 
     output = os.popen(command).read()
 
