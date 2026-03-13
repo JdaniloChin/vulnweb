@@ -1,5 +1,5 @@
 from flask import Flask, request
-import sqlite3
+import sqlite3, os
 from pathlib import Path
 
 app = Flask(__name__)
@@ -105,6 +105,18 @@ def view_file():
         return f"<pre>{content}</pre>"
     except:
         return "No se pudo abrir el archivo"
+    
+
+@app.route("/ping")
+def ping():
+    host = request.args.get("host","")
+    command = "fping -c 1 {host}"
+
+    output = os.popen(command).read()
+
+    return f"""
+        <h2>Resultado del Ping</h2>
+         <pre>{output}</pre> """
 
 if __name__ == "__main__":
     app.run()
